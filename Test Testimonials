@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testimonial Slider</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+
+  .testimonial-slider {
+    max-width: 700px;
+    margin: 50px auto;
+    position: relative;
+    overflow: hidden;
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 30px 40px;
+    font-family: Arial, sans-serif;
+  }
+
+  .slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .testimonial {
+    min-width: 100%;
+    text-align: center;
+    padding: 10px 20px;
+  }
+
+  .testimonial p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+
+  .testimonial h4 { font-weight: bold; margin: 0; }
+  .testimonial span { font-size: 0.9rem; color: #777; }
+
+  .controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    padding: 0 12px;
+  }
+
+  .control-btn {
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .control-btn:hover { background: rgba(0,0,0,0.8); }
+
+  .dots {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .dot {
+    height: 10px;
+    width: 10px;
+    margin: 0 4px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .dot.active { background-color: #333; }
+
+  @media (max-width: 768px) {
+    .testimonial-slider { max-width: 100%; margin: 20px 10px; padding: 20px 15px; }
+    .testimonial p { font-size: 1rem; }
+    .control-btn { padding: 8px 10px; font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="testimonial-slider">
+  <div class="slides" id="slides">
+    <div class="testimonial">
+      <p>“AMAZING — OMG SO GREAT”</p>
+      <h4>Mr Colbridge</h4>
+      <span>Lawyer A</span>
+    </div>
+    <div class="testimonial">
+      <p>“BARK BARK WOOF BARK WOOF WOOF”</p>
+      <h4>Pablo</h4>
+      <span>Rolling in fox poo</span>
+    </div>
+    <div class="testimonial">
+      <p>“I HAVE NO LUNGS NOW.”</p>
+      <h4>Mr Publico</h4>
+      <span>Entrepreneur</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="control-btn" id="prevBtn">❮</button>
+    <button class="control-btn" id="nextBtn">❯</button>
+  </div>
+
+  <div class="dots" id="dots"></div>
+</div>
+
+<script>
+const slides = document.getElementById('slides');
+const totalSlides = slides.children.length;
+const dotsContainer = document.getElementById('dots');
+let currentIndex = 0;
+let autoSlideInterval;
+
+// Create dots
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('span');
+  dot.classList.add('dot');
+  dot.addEventListener('click', () => goToSlide(i));
+  dotsContainer.appendChild(dot);
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentIndex);
+  });
+}
+
+function updateSlide() {
+  slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+  updateDots();
+}
+
+function nextSlide() {
+  currentIndex = (currentIndex + 1) % totalSlides;
+  updateSlide();
+}
+
+function prevSlide() {
+  currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+  updateSlide();
+}
+
+function goToSlide(index) {
+  currentIndex = index;
+  updateSlide();
+  resetAutoSlide();
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  nextSlide();
+  resetAutoSlide();
+});
+document.getElementById('prevBtn').addEventListener('click', () => {
+  prevSlide();
+  resetAutoSlide();
+});
+
+function startAutoSlide() { autoSlideInterval = setInterval(nextSlide, 5000); }
+function resetAutoSlide() { clearInterval(autoSlideInterval); startAutoSlide(); }
+
+updateSlide();
+startAutoSlide();
+</script>
+
+</body>
+</html>
